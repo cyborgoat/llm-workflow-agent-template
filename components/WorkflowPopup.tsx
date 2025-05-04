@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { WorkflowEditor } from './WorkflowEditor';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import {
     Node,
     Edge,
@@ -24,7 +23,6 @@ import {
     EdgeChange,
     Connection,
 } from '@xyflow/react';
-
 import { WorkflowData, ToolNodeData } from '@/types';
 
 
@@ -38,24 +36,21 @@ const dialogContentMotionProps = {
 interface WorkflowPopupProps {
     isOpen: boolean;
     onClose: () => void;
-    workflowData: WorkflowData; // The *initial* workflow data when opened
+    initialWorkflow: WorkflowData; 
     onSave: (workflow: WorkflowData) => void;
 }
 
-// ForwardRef required when applying motion props directly to Shadcn components
 const MotionDialogContent = motion(DialogContent);
 
-export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: WorkflowPopupProps) {
+export function WorkflowPopup({ isOpen, onClose, initialWorkflow, onSave }: WorkflowPopupProps) {
 
     const [editedNodes, setEditedNodes] = useState<Node<ToolNodeData>[]>([]);
     const [editedEdges, setEditedEdges] = useState<Edge[]>([]);
-
 
     const handleNodeDataChange = useCallback((nodeId: string, dataChanges: Partial<ToolNodeData>) => {
         setEditedNodes((currentNodes) =>
             currentNodes.map((node) => {
                 if (node.id === nodeId) {
-
                     const newNodeData = { ...node.data, ...dataChanges };
                     return { ...node, data: newNodeData };
                 }
@@ -64,20 +59,15 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
         );
     }, []);
 
-
     useEffect(() => {
         if (isOpen) {
-
-            setEditedNodes(workflowData.nodes.map(node => ({
+            setEditedNodes(initialWorkflow.nodes.map(node => ({
                 ...node,
                 data: { ...node.data, onChange: handleNodeDataChange }
             })));
-            setEditedEdges(workflowData.edges);
+            setEditedEdges(initialWorkflow.edges);
         }
-
-    }, [isOpen, workflowData, handleNodeDataChange]);
-
-
+    }, [isOpen, initialWorkflow, handleNodeDataChange]);
 
     const onNodesChange: OnNodesChange = useCallback(
         (changes: NodeChange[]) => {
@@ -107,24 +97,25 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
         []
     );
 
-
-
-
     const handleInternalSave = useCallback(() => {
-
         const nodesToSave = editedNodes.map(({ data, ...rest }) => {
-            const { onChange, ...dataToSave } = data; // Destructure to remove onChange
+            const { onChange, ...dataToSave } = data; 
             return { ...rest, data: dataToSave };
         });
-
         onSave({ nodes: nodesToSave, edges: editedEdges });
-    }, [editedNodes, editedEdges, onSave]);
-
+        onClose(); 
+    }, [editedNodes, editedEdges, onSave, onClose]); 
 
     const handleCancel = useCallback(() => {
         onClose();
-    }, [onClose]);
+    }, [onClose]); 
 
+    const handleInteractOutside = useCallback((e: Event) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.react-flow')) {
+            e.preventDefault(); 
+        }
+    }, []);
 
     return (
         <AnimatePresence>
@@ -140,17 +131,12 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="fixed inset-0 bg-black/50 z-40"
-                        style={{ pointerEvents: 'auto' }}
+                        style={{ pointerEvents: 'auto' }} 
                     />
                     <MotionDialogContent
                         className="sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] h-[80vh] flex flex-col z-50 p-0 bg-white rounded-lg shadow-xl overflow-hidden"
                         {...dialogContentMotionProps}
-                        onInteractOutside={(e) => {
-                            const target = e.target as HTMLElement;
-                            if (target.closest('.react-flow')) {
-                                e.preventDefault();
-                            }
-                        }}
+                        onInteractOutside={handleInteractOutside} 
                     >
                         <DialogHeader className="p-6 border-b flex-shrink-0">
                             <DialogTitle>Workflow Editor</DialogTitle>
@@ -159,17 +145,14 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
                             </DialogDescription>
                         </DialogHeader>
 
-
                         <div className="flex-grow my-0 overflow-hidden min-h-0">
-
                             <WorkflowEditor
-                                key={JSON.stringify(workflowData.nodes.map(n => n.id).join('-'))}
-                                nodes={editedNodes}
-                                edges={editedEdges}
+                                key={initialWorkflow.nodes.map(n => n.id).join('-')}
+                                nodes={editedNodes} 
+                                edges={editedEdges} 
                                 onNodesChange={onNodesChange}
                                 onEdgesChange={onEdgesChange}
                                 onConnect={onConnect}
-                                // Removed onChange prop as state is lifted
                             />
                         </div>
 
@@ -185,5 +168,3 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
         </AnimatePresence>
     );
 }
-// --- End of components/WorkflowPopup.tsx ---
-

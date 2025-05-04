@@ -1,4 +1,4 @@
-'use client'; // Required for hooks and event handlers
+'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Send, Workflow as WorkflowIcon } from 'lucide-react';
@@ -6,10 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { WorkflowPopup } from '@/components/WorkflowPopup';
-// Import shared types
-import { Message, WorkflowData, ToolNodeData } from '@/types'; // Adjust path if needed
+import { Message, WorkflowData, ToolNodeData } from '@/types';
 
-// Mock initial workflow data using the new ToolNodeData structure
+// Initial workflow data
 const initialWorkflow: WorkflowData = {
   nodes: [
     {
@@ -51,7 +50,7 @@ const initialWorkflow: WorkflowData = {
     {
       id: '4',
       position: { x: 600, y: 150 },
-      type: 'toolNode', // Specify custom node type (could also be a specific 'outputNode')
+      type: 'toolNode',
       data: {
         name: 'Display Result',
         description: 'Shows the final output.',
@@ -62,7 +61,7 @@ const initialWorkflow: WorkflowData = {
     },
   ],
   edges: [
-    // Edges connect handles defined within the custom node (e.g., based on parameter IDs)
+
     { id: 'e1-2', source: '1', sourceHandle: 'out1', target: '2', targetHandle: 'in1', animated: true },
     { id: 'e2-3', source: '2', sourceHandle: 'out1', target: '3', targetHandle: 'in1', animated: true },
     { id: 'e3-4', source: '3', sourceHandle: 'out1', target: '4', targetHandle: 'in1', animated: true },
@@ -70,21 +69,21 @@ const initialWorkflow: WorkflowData = {
 };
 
 export default function HomePage() {
-  // State for chat messages
+
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', sender: 'agent', text: 'Hello! How can I help you today?' },
     { id: '2', sender: 'agent', text: 'I can answer questions or build workflows using tools.', workflow: initialWorkflow },
   ]);
-  // State for the text input field
+
   const [inputValue, setInputValue] = useState('');
-  // State to control the visibility of the workflow popup
+
   const [isWorkflowPopupOpen, setIsWorkflowPopupOpen] = useState(false);
-  // State to hold the specific workflow data to be displayed in the popup
+
   const [workflowToDisplay, setWorkflowToDisplay] = useState<WorkflowData>(initialWorkflow);
-  // State to hold the most recent known workflow state (updated by agent or user save)
+
   const [latestWorkflowState, setLatestWorkflowState] = useState<WorkflowData>(initialWorkflow);
 
-  // Effect to ensure workflowToDisplay reflects the latest state when the popup is closed
+
   useEffect(() => {
     if (!isWorkflowPopupOpen) {
       setWorkflowToDisplay(latestWorkflowState);
@@ -92,7 +91,7 @@ export default function HomePage() {
   }, [latestWorkflowState, isWorkflowPopupOpen]);
 
 
-  // Function to open the popup with specific workflow data
+
   const openPopup = useCallback((workflowData: WorkflowData) => {
     setWorkflowToDisplay(workflowData); // Set the workflow to show
     setIsWorkflowPopupOpen(true);      // Open the popup
@@ -103,7 +102,7 @@ export default function HomePage() {
     setIsWorkflowPopupOpen(false);
   }, []); // Empty dependency array as it only uses setter
 
-  // Function to handle sending a message
+
   const handleSendMessage = () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput) return; // Don't send empty messages
@@ -152,45 +151,45 @@ export default function HomePage() {
     setInputValue('');
   };
 
-  // Handler for input field changes
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
-  // Handler for pressing Enter key in the input field
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSendMessage();
     }
   };
 
-  // Handler called when the user saves changes in the workflow popup
+
   const handleWorkflowSave = (updatedWorkflow: WorkflowData) => {
     setLatestWorkflowState(updatedWorkflow); // Update the latest known state
     setWorkflowToDisplay(updatedWorkflow);   // Update the display state as well
     closePopup(); // Close the popup
 
-    // Add a confirmation message to the chat
+
     const updateMessage: Message = {
       id: Date.now().toString(),
       sender: 'agent',
       text: 'Workflow has been updated based on your edits.',
-      workflow: updatedWorkflow, // Attach the saved workflow
+      workflow: updatedWorkflow,
     };
     setMessages((prev) => [...prev, updateMessage]);
 
-    // TODO: Send the updatedWorkflow back to the agent/backend if needed
+
   };
 
-  // Render the component UI
+
   return (
       <div className="flex flex-col h-screen bg-gray-50 font-sans">
-        {/* Header */}
+
         <header className="p-4 border-b bg-white shadow-sm">
           <h1 className="text-xl font-semibold text-gray-800">AI Agent Interface</h1>
         </header>
 
-        {/* Chat Message Area */}
+
         <ScrollArea className="flex-grow p-4 space-y-4">
           {messages.map((msg) => (
               <div
@@ -206,17 +205,16 @@ export default function HomePage() {
                             : 'bg-white text-gray-800 border' // Agent message style
                     }`}
                 >
-                  {/* Message text */}
+
                   {msg.text}
-                  {/* Button to open workflow specific to this agent message */}
+
                   {msg.sender === 'agent' && msg.workflow && (
                       <Button
                           variant="outline"
                           size="sm"
                           className="mt-2 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
                           onClick={() => {
-                            // Use the openPopup function with the specific workflow data from this message
-                            openPopup(msg.workflow!); // Non-null assertion is safe due to the check above
+                            openPopup(msg.workflow!);
                           }}
                       >
                         View/Edit Workflow Plan
@@ -228,7 +226,7 @@ export default function HomePage() {
           ))}
         </ScrollArea>
 
-        {/* Input Area */}
+
         <div className="p-4 border-t bg-white flex items-center space-x-2">
           <Input
               type="text"
@@ -239,11 +237,11 @@ export default function HomePage() {
               onKeyDown={handleKeyDown}
               aria-label="Chat input"
           />
-          {/* Send Button */}
+
           <Button onClick={handleSendMessage} aria-label="Send message">
             <Send className="h-5 w-5" />
           </Button>
-          {/* Button to open the latest known workflow */}
+
           <Button
               variant="outline"
               onClick={() => openPopup(latestWorkflowState)} // Use openPopup with the latest state
@@ -254,7 +252,7 @@ export default function HomePage() {
           </Button>
         </div>
 
-        {/* Workflow Popup Component */}
+
         <WorkflowPopup
             isOpen={isWorkflowPopupOpen}
             onClose={closePopup}

@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { WorkflowEditor } from './WorkflowEditor';
 import { motion, AnimatePresence } from 'framer-motion';
-// Import React Flow handlers and types needed for state lifting
+
 import {
     Node,
     Edge,
@@ -24,10 +24,10 @@ import {
     EdgeChange,
     Connection,
 } from '@xyflow/react';
-// Import shared types
+
 import { WorkflowData, ToolNodeData } from '@/types';
 
-// Define motion props for DialogContent
+
 const dialogContentMotionProps = {
     initial: { scale: 0.95, opacity: 0, y: 10 },
     animate: { scale: 1, opacity: 1, y: 0 },
@@ -46,44 +46,44 @@ interface WorkflowPopupProps {
 const MotionDialogContent = motion(DialogContent);
 
 export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: WorkflowPopupProps) {
-    // State lifted up from WorkflowEditor: holds the nodes/edges being edited
+
     const [editedNodes, setEditedNodes] = useState<Node<ToolNodeData>[]>([]);
     const [editedEdges, setEditedEdges] = useState<Edge[]>([]);
 
-    // Callback function (to be injected into nodes) to handle data changes within a ToolNode
+
     const handleNodeDataChange = useCallback((nodeId: string, dataChanges: Partial<ToolNodeData>) => {
         setEditedNodes((currentNodes) =>
             currentNodes.map((node) => {
                 if (node.id === nodeId) {
-                    // Merge the changes into the existing node data
+
                     const newNodeData = { ...node.data, ...dataChanges };
                     return { ...node, data: newNodeData };
                 }
                 return node;
             })
         );
-    }, []); // No dependencies needed as it only uses the setter
+    }, []);
 
-    // Effect to initialize/reset the edited state when the dialog opens or the initial data changes
+
     useEffect(() => {
         if (isOpen) {
-            // Initialize nodes, injecting the onChange callback into each node's data
+
             setEditedNodes(workflowData.nodes.map(node => ({
                 ...node,
                 data: { ...node.data, onChange: handleNodeDataChange }
             })));
             setEditedEdges(workflowData.edges);
         }
-        // Only reset when isOpen becomes true or the initial workflowData structure changes
+
     }, [isOpen, workflowData, handleNodeDataChange]);
 
-    // --- React Flow Handlers (Lifted from WorkflowEditor) ---
+
 
     const onNodesChange: OnNodesChange = useCallback(
         (changes: NodeChange[]) => {
             setEditedNodes((nds) => applyNodeChanges(changes, nds.map(n => ({ ...n, data: { ...n.data, onChange: handleNodeDataChange } }))));
         },
-        [handleNodeDataChange] // Ensure latest callback is used
+        [handleNodeDataChange]
     );
 
     const onEdgesChange: OnEdgesChange = useCallback(
@@ -106,21 +106,21 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
         },
         []
     );
-    // --- End React Flow Handlers ---
 
 
-    // Handler for the Save button
+
+
     const handleInternalSave = useCallback(() => {
-        // Prepare the final data to save (remove the injected onChange)
+
         const nodesToSave = editedNodes.map(({ data, ...rest }) => {
             const { onChange, ...dataToSave } = data; // Destructure to remove onChange
             return { ...rest, data: dataToSave };
         });
-        // Call the parent's onSave with the cleaned nodes and current edges
+
         onSave({ nodes: nodesToSave, edges: editedEdges });
     }, [editedNodes, editedEdges, onSave]);
 
-    // Handler for the Cancel button - directly calls the onClose prop from parent
+
     const handleCancel = useCallback(() => {
         onClose();
     }, [onClose]);
@@ -159,11 +159,11 @@ export function WorkflowPopup({ isOpen, onClose, workflowData, onSave }: Workflo
                             </DialogDescription>
                         </DialogHeader>
 
-                        {/* Editor Container */}
+
                         <div className="flex-grow my-0 overflow-hidden min-h-0">
-                            {/* Pass lifted state and handlers down to WorkflowEditor */}
+
                             <WorkflowEditor
-                                key={JSON.stringify(workflowData.nodes.map(n => n.id).join('-'))} // Key based on initial node IDs
+                                key={JSON.stringify(workflowData.nodes.map(n => n.id).join('-'))}
                                 nodes={editedNodes}
                                 edges={editedEdges}
                                 onNodesChange={onNodesChange}

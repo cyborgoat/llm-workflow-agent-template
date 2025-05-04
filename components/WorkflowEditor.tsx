@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react'; // Removed useState, useCallback, useEffect
+import React, { useMemo } from 'react';
 import {
     ReactFlow,
     Controls,
     Background,
-    // Removed state-related imports: applyNodeChanges, applyEdgeChanges, addEdge
+
     Node,
     Edge,
     OnNodesChange,
@@ -15,11 +15,10 @@ import {
     NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-// Import shared types and the custom node
-import { WorkflowData, ToolNodeData } from '@/types'; // Adjust path if needed
-import { ToolNode } from './ToolNode'; // Import the custom node component
+import { WorkflowData, ToolNodeData } from '@/types';
+import { ToolNode } from './ToolNode';
 
-// Interface for props received from WorkflowPopup
+
 interface WorkflowEditorProps {
     nodes: Node<ToolNodeData>[];
     edges: Edge[];
@@ -28,7 +27,7 @@ interface WorkflowEditorProps {
     onConnect: OnConnect;
 }
 
-// Simplified WorkflowEditor - now primarily presentational
+
 export function WorkflowEditor({
                                    nodes,
                                    edges,
@@ -37,32 +36,31 @@ export function WorkflowEditor({
                                    onConnect,
                                }: WorkflowEditorProps) {
 
-    // Define custom node types - remains the same
+    // Define custom node types
     const nodeTypes: NodeTypes = useMemo(() => ({ toolNode: ToolNode }), []);
 
-    // Removed internal state management (useState, useEffect)
-    // Removed internal handlers (handleNodeDataChange, internal onNodesChange/onEdgesChange/onConnect)
+
 
     return (
-        // Ensure container takes up full space and allows shrinking
+
         <div style={{ height: '100%', width: '100%', minHeight: 0 }}>
             <ReactFlowProvider>
                 <ReactFlow
                     // Pass props directly from parent (WorkflowPopup)
                     nodes={nodes}
                     edges={edges}
-                    nodeTypes={nodeTypes} // Register custom node types
-                    onNodesChange={onNodesChange} // Use handler from props
-                    onEdgesChange={onEdgesChange} // Use handler from props
-                    onConnect={onConnect}         // Use handler from props
-                    fitView // Fit nodes on initial render/data change
+                    nodeTypes={nodeTypes}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    fitView
                     fitViewOptions={{ padding: 0.2 }}
-                    className="bg-gray-100" // Slightly different background
-                    proOptions={{ hideAttribution: true }} // Hide React Flow attribution
+                    className="bg-gray-100"
+                    proOptions={{ hideAttribution: true }}
                     nodesDraggable={true}
                     nodesConnectable={true}
                     elementsSelectable={true}
-                    deleteKeyCode={['Backspace', 'Delete']} // Allow deletion using Backspace or Delete keys
+                    deleteKeyCode={['Backspace', 'Delete']}
                 >
                     <Controls /> {/* Add zoom/pan controls */}
                     <Background variant={BackgroundVariant.Dots} gap={12} size={1} /> {/* Add dotted background */}

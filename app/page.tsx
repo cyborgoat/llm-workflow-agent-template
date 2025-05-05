@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
+import AppSettingsComponent from "../components/sidebar/AppSettingsComponent";
 
 // --- Mock Data & Types ---
 
@@ -334,92 +335,7 @@ const MemorySettings: React.FC = () => {
     );
 };
 
-const AppSettingsComponent: React.FC<{
-  settings: AppSettings;
-  onToggleTheme: () => void;
-  onSetModel: (model: string) => void;
-}> = ({ settings, onToggleTheme, onSetModel }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const models = ['gemini-pro', 'claude-3-opus', 'gpt-4-turbo'];
-
-    return (
-        <div>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex w-full items-center justify-between px-3 py-2 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors"
-            >
-                <div className="flex items-center">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                </div>
-                 <motion.div animate={{ rotate: isOpen ? 0 : -90 }}>
-                    <ChevronDown className="h-4 w-4" />
-                </motion.div>
-            </button>
-            <motion.div
-                initial={false}
-                animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="overflow-hidden"
-            >
-                <div className="mt-2 space-y-4 px-3 pt-1">
-                    {/* Theme Toggle */}
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="theme-toggle" className="text-sm flex items-center">
-                            {settings.theme === 'light' ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-                            Theme
-                        </label>
-                        {/* Conceptual Switch - Replace with shadcn Switch */}
-                        <button
-                            id="theme-toggle"
-                            onClick={onToggleTheme}
-                            className={cn(
-                                "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                                settings.theme === 'dark' ? 'bg-primary' : 'bg-muted'
-                            )}
-                        >
-                            <motion.span
-                                layout // Animate layout changes
-                                transition={{ type: "spring", stiffness: 700, damping: 30 }} // Spring animation
-                                className={cn(
-                                    "inline-block h-4 w-4 transform rounded-full bg-background transition-transform",
-                                    settings.theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
-                                )} />
-                        </button>
-                    </div>
-
-                    {/* Model Selector */}
-                    <div className="space-y-1">
-                        <label htmlFor="model-select" className="text-sm font-medium">LLM Model</label>
-                        {/* Conceptual Select - Replace with shadcn Select */}
-                         <select
-                            id="model-select"
-                            value={settings.model}
-                            onChange={(e) => onSetModel(e.target.value)}
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        >
-                            {models.map(model => (
-                                <option key={model} value={model}>{model}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Add other settings like API keys here if needed */}
-                     <div className="space-y-1">
-                        <label htmlFor="api-key" className="text-sm font-medium">API Key (Example)</label>
-                        <input
-                            id="api-key"
-                            type="password"
-                            placeholder="Enter your API key"
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
-                </div>
-            </motion.div>
-        </div>
-    );
-};
-
+// Removed local AppSettingsComponent. Now using the one from /components/sidebar/AppSettingsComponent.tsx.
 
 const Sidebar: React.FC<{
     settings: AppSettings;

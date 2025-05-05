@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type {AppSettings} from "../../types";
 import {Tooltip, TooltipContent, TooltipTrigger} from "../ui/tooltip";
+import { cn } from '@/lib/utils';
 
 const statusDetails: Record<string, { label: string; ok: string; down: string }> = {
     llm: {
@@ -20,54 +21,94 @@ const statusDetails: Record<string, { label: string; ok: string; down: string }>
     }
 };
 
-const StatusDot: React.FC<{ status: string; color?: string }> = ({status, color}) => (
-    <span
-        className={`inline-block w-3 h-3 rounded-full transition-transform duration-200 mr-1 ${
-            status === "active" ? `${color || 'bg-green-500'} animate-pulse` : 'bg-gray-400'
-        } group-hover:scale-125`}
-    />
-);
+type Status = 'active' | 'inactive';
 
-const StatusIndicators: React.FC<{ settings: AppSettings }> = ({settings}) => (
+const StatusDot: React.FC<{ status: Status; color?: string }> = ({status, color}) => {
+    const [applyShine, setApplyShine] = useState(false);
+    const isMounted = useRef(false);
+
+    useEffect(() => {
+        if (isMounted.current) {
+            setApplyShine(true);
+            const timer = setTimeout(() => {
+                setApplyShine(false);
+            }, 500);
+            return () => clearTimeout(timer);
+        } else {
+            isMounted.current = true;
+        }
+    }, [status]);
+
+    return (
+        <span
+            className={cn(
+              "inline-block w-3 h-3 rounded-full mr-1",
+              "transition-colors duration-300 ease-in-out",
+              "transform-gpu",
+              status === "active" ? `${color || 'bg-green-500'} animate-pulse` : 'bg-gray-400',
+              "transition-transform duration-200 ease-in-out group-hover:scale-125",
+              applyShine && 'animate-shine'
+            )}
+        />
+    );
+};
+
+const StatusIndicators: React.FC<{ settings: AppSettings }> = ({settings}) => {
+    const [llmSimulatedStatus, setLlmSimulatedStatus] = useState<Status>(settings.llmStatus); 
+    const [toolSimulatedStatus, setToolSimulatedStatus] = useState<Status>(settings.toolStatus);
+    const [sensorSimulatedStatus, setSensorSimulatedStatus] = useState<Status>(settings.sensorStatus);
+
+    useEffect(() => {
+        const possibleStatuses: Status[] = ['active', 'inactive'];
+        const intervalId = setInterval(() => {
+            setLlmSimulatedStatus(possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)]);
+            setToolSimulatedStatus(possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)]);
+            setSensorSimulatedStatus(possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)]);
+        }, 2500); 
+
+        return () => clearInterval(intervalId);
+    }, []); 
+
+    return (
     <div className="flex gap-5 text-xs items-center">
         {/* Model/LLM */}
         <Tooltip>
             <TooltipTrigger asChild>
-        <span className="flex items-center gap-1 group cursor-pointer">
-          <StatusDot status={settings.llmStatus} color="bg-green-500"/>
-          <span className="font-medium">{statusDetails.llm.label}</span>
-        </span>
+                <span className="flex items-center gap-1 group cursor-pointer">
+                  <StatusDot status={llmSimulatedStatus} color="bg-green-500"/> 
+                  <span className="font-medium">{statusDetails.llm.label}</span>
+                </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-                {settings.llmStatus === 'active' ? statusDetails.llm.ok : statusDetails.llm.down}
+                {llmSimulatedStatus === 'active' ? statusDetails.llm.ok : statusDetails.llm.down}
             </TooltipContent>
         </Tooltip>
         {/* Tools */}
         <Tooltip>
             <TooltipTrigger asChild>
-        <span className="flex items-center gap-1 group cursor-pointer">
-          <StatusDot status={settings.toolStatus} color="bg-blue-500"/>
-          <span className="font-medium">{statusDetails.tool.label}</span>
-        </span>
+                <span className="flex items-center gap-1 group cursor-pointer">
+                    <StatusDot status={toolSimulatedStatus} color="bg-blue-500"/> 
+                    <span className="font-medium">{statusDetails.tool.label}</span>
+                </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-                {settings.toolStatus === 'active' ? statusDetails.tool.ok : statusDetails.tool.down}
+                {toolSimulatedStatus === 'active' ? statusDetails.tool.ok : statusDetails.tool.down}
             </TooltipContent>
         </Tooltip>
         {/* Sensors */}
         <Tooltip>
             <TooltipTrigger asChild>
-        <span className="flex items-center gap-1 group cursor-pointer">
-          <StatusDot status={settings.sensorStatus} color="bg-yellow-400"/>
-          <span className="font-medium">{statusDetails.sensor.label}</span>
-        </span>
+                <span className="flex items-center gap-1 group cursor-pointer">
+                    <StatusDot status={sensorSimulatedStatus} color="bg-yellow-400"/> 
+                    <span className="font-medium">{statusDetails.sensor.label}</span>
+                </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-                {settings.sensorStatus === 'active' ? statusDetails.sensor.ok : statusDetails.sensor.down}
+                {sensorSimulatedStatus === 'active' ? statusDetails.sensor.ok : statusDetails.sensor.down}
             </TooltipContent>
         </Tooltip>
     </div>
-);
+    );
+};
 
 export default StatusIndicators;
-

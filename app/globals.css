@@ -112,6 +112,20 @@
     --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* Add custom animation for status dot shine */
+@keyframes shine {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+.animate-shine {
+  animation: shine 0.5s ease-in-out;
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

@@ -12,15 +12,20 @@ interface AppSettingsComponentProps {
   onSetModel: (model: string) => void;
 }
 
-const AppSettingsComponent: React.FC<AppSettingsComponentProps> = ({ settings, onToggleTheme, onSetModel }) => {
+interface ControlledAppSettingsComponentProps extends AppSettingsComponentProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({ settings, onToggleTheme, onSetModel, open, onOpenChange }) => {
   const models = ["gemini-pro", "claude-3-opus", "gpt-4-turbo"];
   const [apiKey, setApiKey] = React.useState("");
   const [showApiKey, setShowApiKey] = React.useState(false);
-  // Prevent popover from closing on interaction
-  const popoverContentProps = { side: "top" as const, className: "w-72", align: "center" as const, onInteractOutside: (e: any) => e.preventDefault() };
+  // Restore default popover behavior: close on outside click
+  const popoverContentProps = { side: "top" as const, className: "w-72", align: "center" as const };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <button
           className="flex w-full items-center justify-between px-3 py-2 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors"

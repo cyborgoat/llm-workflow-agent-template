@@ -12,6 +12,8 @@ interface SidebarProps {
   topics: ChatTopic[];
   activeTopic: string;
   onSelectTopic: (id: string) => void;
+  settingsPopoverOpen: boolean;
+  onSettingsPopoverOpenChange: (open: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -21,6 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   topics,
   activeTopic,
   onSelectTopic,
+  settingsPopoverOpen,
+  onSettingsPopoverOpenChange,
 }) => {
   return (
     <aside className="hidden md:flex md:flex-col md:w-64 lg:w-72 border-r bg-muted/40 dark:bg-card shrink-0 h-full p-4">
@@ -35,6 +39,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           settings={settings}
           onToggleTheme={onToggleTheme}
           onSetModel={onSetModel}
+          open={settingsPopoverOpen}
+          onOpenChange={onSettingsPopoverOpenChange}
         />
       </div>
     </aside>

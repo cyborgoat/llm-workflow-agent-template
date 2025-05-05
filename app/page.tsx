@@ -335,6 +335,7 @@ const AppLayout: React.FC = () => {
   const { settings, toggleTheme, setModel } = useMockSettings();
   const { messages, inputValue, setInputValue, addMessage } = useMockChat();
   const { topics, activeTopic, selectTopic } = useMockChatHistory();
+  const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
 
   // Apply theme class to body
   useEffect(() => {
@@ -359,6 +360,8 @@ const AppLayout: React.FC = () => {
             topics={topics}
             activeTopic={activeTopic}
             onSelectTopic={selectTopic}
+            settingsPopoverOpen={settingsPopoverOpen}
+            onSettingsPopoverOpenChange={setSettingsPopoverOpen}
         />
         {/* Main Content Area */}
         <main className="flex flex-1 flex-col overflow-hidden">

@@ -22,7 +22,10 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
-import AppSettingsComponent from "../components/sidebar/AppSettingsComponent";
+import Header from "../components/header/Header";
+import Sidebar from "../components/sidebar/Sidebar";
+import ChatArea from "../components/chat/ChatArea";
+import InputArea from "../components/chat/InputArea";
 
 // --- Mock Data & Types ---
 
@@ -242,15 +245,6 @@ const ScrollingMessages: React.FC = () => {
   );
 };
 
-const Header: React.FC<{ settings: AppSettings }> = ({ settings }) => {
-  return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b bg-background px-4 md:px-6 sticky top-0 z-10">
-      <div className="font-semibold text-lg">My Agent</div>
-      <ScrollingMessages />
-      <StatusIndicators settings={settings} />
-    </header>
-  );
-};
 
 // Sidebar Components
 const ChatHistory: React.FC<{
@@ -331,163 +325,6 @@ const MemorySettings: React.FC = () => {
                     </pre>
                 </div>
             </motion.div>
-        </div>
-    );
-};
-
-// Removed local AppSettingsComponent. Now using the one from /components/sidebar/AppSettingsComponent.tsx.
-
-const Sidebar: React.FC<{
-    settings: AppSettings;
-    onToggleTheme: () => void;
-    onSetModel: (model: string) => void;
-    topics: ChatTopic[];
-    activeTopic: string;
-    onSelectTopic: (id: string) => void;
-}> = (props) => {
-  return (
-    <aside className="hidden md:flex md:flex-col md:w-64 lg:w-72 border-r bg-muted/40 dark:bg-card shrink-0 h-full overflow-y-auto p-4 space-y-4">
-        {/* Conceptual Separator - Replace with shadcn Separator */}
-        <ChatHistory topics={props.topics} activeTopic={props.activeTopic} onSelectTopic={props.onSelectTopic}/>
-        <hr className="border-border" />
-        <MemorySettings />
-        <hr className="border-border" />
-        <AppSettingsComponent
-            settings={props.settings}
-            onToggleTheme={props.onToggleTheme}
-            onSetModel={props.onSetModel}
-        />
-    </aside>
-  );
-};
-
-// Chat Area Components
-const MessageComponent: React.FC<{ message: Message }> = ({ message }) => {
-  const isUser = message.sender === 'user';
-  const Icon = isUser ? User : Bot;
-
-  return (
-    // Animate message appearance
-    <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className={cn("flex items-start space-x-3 py-3", isUser ? 'justify-end' : '')}
-    >
-      {!isUser && <Icon className="h-6 w-6 text-primary flex-shrink-0 mt-1" />}
-      <div
-        className={cn(
-          "rounded-lg px-4 py-2 max-w-xs md:max-w-md lg:max-w-lg break-words shadow-sm", // Added shadow
-          isUser
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-muted'
-        )}
-      >
-        <p className="text-sm">{message.text}</p>
-        <p className="text-xs text-right mt-1 opacity-70">
-            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </p>
-      </div>
-      {isUser && <User className="h-6 w-6 text-muted-foreground flex-shrink-0 mt-1" />}
-    </motion.div>
-  );
-};
-
-const ChatArea: React.FC<{ messages: Message[] }> = ({ messages }) => {
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // Auto-scroll to bottom
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
-    return (
-        <div ref={scrollAreaRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-1 bg-background"> {/* Reduced space-y */}
-            {messages.map((msg) => (
-                <MessageComponent key={msg.id} message={msg} />
-            ))}
-            {/* Dummy div to target for scrolling */}
-            <div ref={messagesEndRef} />
-        </div>
-    );
-};
-
-
-// Input Area Component
-const InputArea: React.FC<{
-    inputValue: string;
-    onInputChange: (value: string) => void;
-    onSendMessage: (text: string) => void;
-}> = ({ inputValue, onInputChange, onSendMessage }) => {
-
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-    const handleSend = () => {
-        if (inputValue.trim()) {
-            onSendMessage(inputValue.trim());
-        }
-    };
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // Prevent newline
-            handleSend();
-        }
-    };
-
-    // Adjust textarea height dynamically
-    useEffect(() => {
-        const textarea = textAreaRef.current;
-        if (textarea) {
-            textarea.style.height = 'auto'; // Reset height
-            const scrollHeight = textarea.scrollHeight;
-            // Set a max height (e.g., 200px)
-            textarea.style.height = `${Math.min(scrollHeight, 200)}px`;
-        }
-    }, [inputValue]);
-
-
-    return (
-        <div className="border-t bg-background p-3 md:p-4 sticky bottom-0">
-            <div className="relative flex items-end space-x-2">
-                 {/* Conceptual Buttons - Replace with shadcn Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-md hover:bg-accent text-muted-foreground hover:text-accent-foreground"
-                >
-                    <Paperclip className="h-5 w-5" />
-                    <span className="sr-only">Attach file</span>
-                </motion.button>
-                 <motion.button
-                    whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-md hover:bg-accent text-muted-foreground hover:text-accent-foreground"
-                 >
-                    <ImageIcon className="h-5 w-5" />
-                     <span className="sr-only">Attach image</span>
-                </motion.button>
-                {/* Conceptual Textarea - Replace with shadcn Textarea */}
-                <textarea
-                    ref={textAreaRef}
-                    value={inputValue}
-                    onChange={(e) => onInputChange(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type your message... (Shift+Enter for newline)"
-                    rows={1} // Start with 1 row
-                    className="flex-1 resize-none rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-h-[40px] max-h-[200px] overflow-y-auto"
-                />
-                {/* Conceptual Button - Replace with shadcn Button */}
-                <button
-                    type="button"
-                    onClick={handleSend}
-                    aria-label="Send message"
-                    disabled={!inputValue.trim()}
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-10"
-                >
-                    <Send className="h-5 w-5" />
-                     <span className="sr-only">Send message</span>
-                </button>
-            </div>
         </div>
     );
 };

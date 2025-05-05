@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "My Agent",
+    title: "Awesome Agent",
     description: "An LLM Agent Webapp example",
 };
 

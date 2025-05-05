@@ -3,7 +3,7 @@
     {
       "id": "incident-report",
       "type": "workflow",
-      "position": { "x": 50, "y": 50 },
+      "position": { "x": 100, "y": 100 },
       "data": {
         "name": "Incident Report",
         "description": "User reports network outage.",
@@ -14,7 +14,7 @@
     {
       "id": "initial-assessment",
       "type": "workflow",
-      "position": { "x": 300, "y": 50 },
+      "position": { "x": 350, "y": 100 },
       "data": {
         "name": "Initial Assessment",
         "description": "Determine affected locations and users.",
@@ -24,7 +24,7 @@
     {
       "id": "device-check",
       "type": "workflow",
-      "position": { "x": 550, "y": 50 },
+      "position": { "x": 600, "y": 100 },
       "data": {
         "name": "Device Check",
         "description": "Check core switch, firewall, and connections.",
@@ -34,7 +34,7 @@
     {
       "id": "loop-detection",
       "type": "workflow",
-      "position": { "x": 800, "y": 50 },
+      "position": { "x": 850, "y": 100 },
       "data": {
         "name": "Loop Detection",
         "description": "Identify network loops or storms.",
@@ -42,19 +42,20 @@
       }
     },
     {
-      "id": "escalation",
+      "id": "resolution",
       "type": "workflow",
-      "position": { "x": 1050, "y": 50 },
+      "position": { "x": 350, "y": 250 },
       "data": {
-        "name": "Escalation",
-        "description": "Escalate to network engineering if unresolved.",
-        "iconKey": "ArrowUpCircle"
+        "name": "Resolution",
+        "description": "Restore service and monitor stability.",
+        "iconKey": "CheckCircle",
+        "status": "success"
       }
     },
     {
       "id": "remediation",
       "type": "workflow",
-      "position": { "x": 1300, "y": 50 },
+      "position": { "x": 600, "y": 250 },
       "data": {
         "name": "Remediation",
         "description": "Isolate faulty device, reconfigure, enable STP.",
@@ -63,14 +64,13 @@
       }
     },
     {
-      "id": "resolution",
+      "id": "escalation",
       "type": "workflow",
-      "position": { "x": 1550, "y": 50 },
+      "position": { "x": 850, "y": 250 },
       "data": {
-        "name": "Resolution",
-        "description": "Restore service and monitor stability.",
-        "iconKey": "CheckCircle",
-        "status": "success"
+        "name": "Escalation",
+        "description": "Escalate to network engineering if unresolved.",
+        "iconKey": "ArrowUpCircle"
       }
     }
   ],

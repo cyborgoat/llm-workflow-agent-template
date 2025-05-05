@@ -3,7 +3,7 @@
     {
       "id": "user-input",
       "type": "workflow",
-      "position": { "x": 50, "y": 50 },
+      "position": { "x": 50, "y": 150 },
       "data": {
         "name": "User Input",
         "description": "User describes a code bug.",

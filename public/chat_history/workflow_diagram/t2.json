@@ -3,7 +3,7 @@
     {
       "id": "user-input",
       "type": "workflow",
-      "position": { "x": 60, "y": 60 },
+      "position": { "x": 50, "y": 150 },
       "data": {
         "name": "User Input",
         "description": "User asks for recipe ideas.",

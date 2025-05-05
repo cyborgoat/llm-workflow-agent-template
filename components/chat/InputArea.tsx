@@ -24,7 +24,9 @@ const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendM
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            onSendMessage(inputValue);
+            if (inputValue.trim() !== "") {
+                onSendMessage(inputValue);
+            }
         }
     };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +74,14 @@ const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendM
                 className="flex-1"
                 aria-label="Chat input"
             />
-            <Button onClick={() => onSendMessage(inputValue)} aria-label="Send message">
+            <Button
+                onClick={() => {
+                    if (inputValue.trim() !== "") {
+                        onSendMessage(inputValue);
+                    }
+                }}
+                aria-label="Send message"
+            >
                 <Send className="h-5 w-5"/>
             </Button>
         </div>

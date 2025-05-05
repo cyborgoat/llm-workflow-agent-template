@@ -11,6 +11,7 @@ interface InputAreaProps {
     onFileUpload?: (file: File) => void; // Called for each file uploaded
     showCanvas: boolean; // Add prop for canvas state
     onToggleCanvas: () => void; // Add prop for toggling canvas
+    disabled?: boolean; // Add optional disabled prop
 }
 
 const InputArea: React.FC<InputAreaProps> = ({
@@ -19,7 +20,8 @@ const InputArea: React.FC<InputAreaProps> = ({
     onSendMessage,
     onFileUpload,
     showCanvas, // Destructure prop
-    onToggleCanvas // Destructure prop
+    onToggleCanvas, // Destructure prop
+    disabled = false // Destructure disabled prop with default
 }) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -102,6 +104,7 @@ const InputArea: React.FC<InputAreaProps> = ({
                 onKeyDown={handleKeyDown}
                 className="flex-1"
                 aria-label="Chat input"
+                disabled={disabled} // Apply disabled prop
             />
             <Button
                 onClick={() => {
@@ -110,6 +113,7 @@ const InputArea: React.FC<InputAreaProps> = ({
                     }
                 }}
                 aria-label="Send message"
+                disabled={disabled || inputValue.trim() === ""} // Apply disabled prop and check input value
             >
                 <Send className="h-5 w-5"/>
             </Button>

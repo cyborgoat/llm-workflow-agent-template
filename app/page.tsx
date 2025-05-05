@@ -12,9 +12,14 @@ const useMockChat = () => {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [inputValue, setInputValue] = useState('');
 
-    const addMessage = (sender: 'user' | 'agent', text: string) => {
+    const addMessage = (sender: 'user' | 'agent', text: string, topicId: string) => {
+        if (!topicId) { 
+            console.error("Attempted to add message without a topicId");
+            return; // Don't add messages without a topic
+        }
         const newMessage: Message = {
             id: Date.now().toString(),
+            topicId, // Assign topicId
             sender,
             text,
             timestamp: new Date(),
@@ -25,7 +30,8 @@ const useMockChat = () => {
         if (sender === 'user') {
             setInputValue('');
             setTimeout(() => {
-                addMessage('agent', `Thinking about "${text}"... [Simulated Response]`);
+                // Agent response also needs the topicId
+                addMessage('agent', `Thinking about "${text}"... [Simulated Response]`, topicId); 
             }, 1500);
         }
     };
@@ -50,40 +56,57 @@ const useMockSettings = () => {
 
 const useMockChatHistory = () => {
     const [topics, setTopics] = useState<ChatTopic[]>(initialTopics);
-    const [activeTopic, setActiveTopic] = useState<string>('t1');
+    const [activeTopic, setActiveTopic] = useState<string | null>('t1'); 
 
-    const selectTopic = (id: string) => setActiveTopic(id);
+    const selectTopic = (id: string | null) => setActiveTopic(id);
 
-    return {topics, activeTopic, selectTopic};
+    // Function to create a new topic
+    const createNewTopic = (title: string): string => {
+        const newTopicId = `t${Date.now()}`; // Simple unique ID generation
+        const newTopic: ChatTopic = { id: newTopicId, title };
+        setTopics(prevTopics => [...prevTopics, newTopic]);
+        return newTopicId;
+    };
+
+    return {topics, activeTopic, selectTopic, createNewTopic};
 }
 
 const AppLayout: React.FC = () => {
     const {messages, inputValue, setInputValue, addMessage} = useMockChat();
-    const {topics, activeTopic, selectTopic} = useMockChatHistory();
+    const {topics, activeTopic, selectTopic, createNewTopic} = useMockChatHistory(); 
     const {settings, settingsPopoverOpen, setSettingsPopoverOpen, toggleTheme, setModel} = useMockSettings();
     const [showCanvas, setShowCanvas] = useState(false); 
     const [isSidebarHovered, setIsSidebarHovered] = useState(false); 
 
     const handleSendMessage = (text: string) => {
-        addMessage('user', text);
-        // In real app, send to backend here
+        let targetTopicId = activeTopic;
+
+        // If no topic is active (new chat), create one first
+        if (!targetTopicId) {
+            const newTitle = text.length > 30 ? text.substring(0, 27) + '...' : text; // Use first part of message as title
+            targetTopicId = createNewTopic(newTitle || "New Chat"); 
+            selectTopic(targetTopicId); // Activate the new topic
+        }
+
+        // Now add the message to the target topic (either existing or new)
+        addMessage('user', text, targetTopicId);
     }
 
     const toggleCanvas = useCallback(() => {
         setShowCanvas(prev => !prev);
     }, []);
 
-    // Apply theme class to body
     useEffect(() => {
         document.body.classList.remove('light', 'dark');
         document.body.classList.add(settings.theme);
     }, [settings.theme]);
 
+    const filteredMessages = activeTopic ? messages.filter(msg => msg.topicId === activeTopic) : [];
+
     return (
         <div className={`flex flex-col h-screen ${settings.theme}`}>
             <Header settings={settings}/>
             <main className="flex flex-1 overflow-hidden">
-                {/* Sidebar Container with Hover Handlers */}
                 <div 
                     onMouseEnter={() => setIsSidebarHovered(true)}
                     onMouseLeave={() => setIsSidebarHovered(false)}
@@ -102,23 +125,18 @@ const AppLayout: React.FC = () => {
                     />
                 </div>
 
-                {/* Main Content Area (Chat + Optional Canvas) */}
                 <div className="flex flex-1 flex-col overflow-hidden">
-                    {/* Top section (Chat or Chat+Canvas) */}
                     <div className="flex flex-1 overflow-hidden">
-                        {/* Chat Area always visible */}
                         <div className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${showCanvas ? 'w-1/2' : 'w-full'}`}> 
-                            <ChatArea messages={messages} className="flex-1 overflow-y-auto p-4"/>
+                            <ChatArea messages={filteredMessages} className="flex-1 overflow-y-auto p-4"/>
                         </div>
                         
-                        {/* Canvas Area conditionally rendered */}
                         {showCanvas && (
                             <div className="w-1/2 border-l overflow-hidden">
                                 <CanvasArea/>
                             </div>
                         )}
                     </div>
-                    {/* Input Area */}
                     <InputArea
                         inputValue={inputValue}
                         onInputChange={setInputValue}

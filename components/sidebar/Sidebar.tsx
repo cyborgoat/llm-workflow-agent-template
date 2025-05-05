@@ -3,16 +3,18 @@ import ChatHistory from "./ChatHistory";
 import MemorySettings from "./MemorySettings";
 import AppSettingsComponent from "./AppSettingsComponent";
 import type {AppSettings, ChatTopic} from "../../types"; 
-import {Separator} from "../ui/separator";
 import { cn } from '@/lib/utils'; 
+import { Button } from "../ui/button"; 
+import { PlusSquare } from 'lucide-react'; 
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"; 
 
 interface SidebarProps {
     settings: AppSettings;
     onToggleTheme: () => void;
     onSetModel: (model: string) => void;
     topics: ChatTopic[];
-    activeTopic: string;
-    onSelectTopic: (id: string) => void;
+    activeTopic: string | null;
+    onSelectTopic: (id: string | null) => void;
     settingsPopoverOpen: boolean;
     onSettingsPopoverOpenChange: (open: boolean) => void;
     isExpanded?: boolean; 
@@ -36,6 +38,29 @@ const Sidebar: React.FC<SidebarProps> = ({
                 isExpanded ? "md:w-64 lg:w-72 p-4" : "md:w-16 p-2 items-center" 
             )}
         >
+            {/* Add New Chat Button - Top Level */} 
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant={activeTopic === null ? "secondary" : "ghost"} 
+                        className={cn(
+                            "w-full mb-4", 
+                            isExpanded ? "justify-start px-3 py-2" : "justify-center p-2"
+                        )}
+                        onClick={() => onSelectTopic(null)} 
+                        aria-label="Start new chat"
+                    >
+                        <PlusSquare className={cn("h-4 w-4", isExpanded ? "mr-2" : "mr-0")} />
+                        {isExpanded && <span className="text-sm">New Chat</span>}
+                    </Button>
+                </TooltipTrigger>
+                {!isExpanded && (
+                    <TooltipContent side="right" sideOffset={5}>
+                        Start new chat
+                    </TooltipContent>
+                )}
+            </Tooltip>
+
             <div className={cn("flex flex-col flex-1 overflow-y-auto space-y-4", isExpanded ? "w-full" : "w-auto")}>
                 <ChatHistory 
                     topics={topics} 
@@ -43,11 +68,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onSelectTopic={onSelectTopic} 
                     isExpanded={isExpanded} 
                 />
-                <Separator/> 
                 <MemorySettings isExpanded={isExpanded}/>  
-                <Separator/>
             </div>
-            <div className={cn("flex-shrink-0", isExpanded ? "w-full" : "w-auto")}>
+            <div className={cn("flex-shrink-0 mt-auto", isExpanded ? "w-full" : "w-auto")}> 
                 <AppSettingsComponent
                     settings={settings}
                     onToggleTheme={onToggleTheme}

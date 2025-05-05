@@ -1,14 +1,14 @@
 import React from "react";
 import type {ChatTopic} from "../../types";
-import {ChevronDown, History} from "lucide-react";
+import {ChevronDown, History, PlusSquare} from "lucide-react";
 import {motion} from "framer-motion";
 import { cn } from '@/lib/utils'; 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"; 
 
 interface ChatHistoryProps {
     topics: ChatTopic[];
-    activeTopic: string;
-    onSelectTopic: (id: string) => void;
+    activeTopic: string | null;
+    onSelectTopic: (id: string | null) => void;
     isExpanded?: boolean; 
 }
 
@@ -42,14 +42,16 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({topics, activeTopic, onSelectT
                 <motion.div
                     initial={false}
                     animate={{
-                        height: isOpen ? 'auto' : 0, 
-                        opacity: isOpen ? 1 : 0,
-                        display: isOpen || !isExpanded ? 'block' : 'none' 
+                        // Collapse if history is closed OR if sidebar is collapsed
+                        height: (isOpen && isExpanded) ? 'auto' : 0, 
+                        opacity: (isOpen && isExpanded) ? 1 : 0,
+                        // Remove the potentially problematic display logic 
                     }}
                     transition={{duration: 0.2, ease: "easeInOut"}}
                     className="overflow-hidden"
                 >
                     <div className={cn("mt-1 pt-1 space-y-1", isExpanded ? "px-1" : "px-0 flex flex-col items-center")} >
+                        {/* Existing Topic Buttons */}
                         {topics.map((topic) => (
                             <button
                                 key={topic.id}
@@ -57,17 +59,15 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({topics, activeTopic, onSelectT
                                 className={cn(
                                     "w-full text-left rounded px-2 py-1 text-xs transition-colors",
                                     activeTopic === topic.id ? "bg-primary text-primary-foreground" : "hover:bg-muted",
-                                    !isExpanded && "p-1 justify-center flex" // Center content (sr-only span) when collapsed
+                                    !isExpanded && "p-1 justify-center flex"
                                 )}
-                                aria-label={topic.title} // Keep aria-label
+                                aria-label={topic.title}
                             >
-                                {/* Show only icon or text based on state */} 
+                                {/* Show only icon or text based on state */}
                                 {isExpanded ? (
                                     topic.title
                                 ) : (
-                                     <span className="sr-only">{topic.title}</span> // Keep screen reader text
-                                    // Placeholder for potential topic icons later
-                                    // <MessageSquare size={14} /> 
+                                    <span className="sr-only">{topic.title}</span>
                                 )}
                             </button>
                         ))}

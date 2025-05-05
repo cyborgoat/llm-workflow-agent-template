@@ -34,7 +34,7 @@ const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({
         <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>
                 <button
-                    className="flex w-full items-center justify-between px-3 py-2 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors"
+                    className="flex w-full items-center justify-between p-0 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors"
                     aria-label="Open settings"
                 >
                     <div className="flex items-center">

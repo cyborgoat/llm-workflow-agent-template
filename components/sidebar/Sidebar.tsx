@@ -2,7 +2,7 @@ import React from "react";
 import ChatHistory from "./ChatHistory";
 import MemorySettings from "./MemorySettings";
 import AppSettingsComponent from "./AppSettingsComponent";
-import type {AppSettings, ChatTopic} from "../../types"; 
+import type {AppSettings, ChatTopic} from "@/types";
 import { cn } from '@/lib/utils'; 
 import { Button } from "../ui/button"; 
 import { PlusSquare } from 'lucide-react'; 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import type {AppSettings} from "../../types";
+import type {AppSettings} from "@/types";
 import {Tooltip, TooltipContent, TooltipTrigger} from "../ui/tooltip";
 import { cn } from '@/lib/utils';
 

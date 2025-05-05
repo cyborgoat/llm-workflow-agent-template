@@ -1,7 +1,7 @@
 import React from "react";
 import StatusIndicators from "./StatusIndicators";
 import ScrollingMessages from "./ScrollingMessages";
-import type {AppSettings} from "../../types";
+import type {AppSettings} from "@/types";
 
 const Header: React.FC<{ settings: AppSettings }> = ({settings}) => {
     return (

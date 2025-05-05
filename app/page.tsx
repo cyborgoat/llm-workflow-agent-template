@@ -5,7 +5,7 @@ import Header from "../components/header/Header";
 import Sidebar from "../components/sidebar/Sidebar";
 import ChatArea from "../components/chat/ChatArea";
 import InputArea from "../components/chat/InputArea";
-import {AppSettings, ChatTopic, initialMessages, initialSettings, initialTopics, Message} from "../mock/mockData";
+import {AppSettings, ChatTopic, initialMessages, initialSettings, initialTopics, Message} from "@/mock/mockData";
 import CanvasArea from '@/components/canvas/CanvasArea';
 
 const useMockChat = () => {

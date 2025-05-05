@@ -5,8 +5,7 @@ import {Switch} from "../ui/switch";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "../ui/select";
 import {Input} from "../ui/input";
 import {Popover, PopoverContent, PopoverTrigger} from "../ui/popover";
-import { cn } from '@/lib/utils'; 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"; 
+import { cn } from '@/lib/utils';
 
 interface AppSettingsComponentProps {
     settings: AppSettings;

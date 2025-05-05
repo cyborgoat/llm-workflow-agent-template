@@ -1,11 +1,12 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import Header from "../components/header/Header";
 import Sidebar from "../components/sidebar/Sidebar";
 import ChatArea from "../components/chat/ChatArea";
 import InputArea from "../components/chat/InputArea";
 import {AppSettings, ChatTopic, initialMessages, initialSettings, initialTopics, Message} from "../mock/mockData";
+import CanvasArea from '@/components/canvas/CanvasArea';
 
 const useMockChat = () => {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -34,38 +35,17 @@ const useMockChat = () => {
 
 const useMockSettings = () => {
     const [settings, setSettings] = useState<AppSettings>(initialSettings);
+    const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
 
-    const toggleTheme = () => {
-        setSettings((prev) => ({
-            ...prev,
-            theme: prev.theme === 'light' ? 'dark' : 'light',
-        }));
-    };
-
-    const setModel = (model: string) => {
-        setSettings((prev) => ({...prev, model}));
-    };
-
-    useEffect(() => {
-        const llmInterval = setInterval(() => {
-            setSettings(prev => ({
-                ...prev,
-                llmStatus: prev.llmStatus === 'active' ? 'inactive' : 'active'
-            }))
-        }, 5000);
-        const toolInterval = setInterval(() => {
-            setSettings(prev => ({
-                ...prev,
-                toolStatus: prev.toolStatus === 'active' ? 'inactive' : 'active'
-            }))
-        }, 7000);
-        return () => {
-            clearInterval(llmInterval);
-            clearInterval(toolInterval);
-        }
+    const toggleTheme = useCallback(() => {
+        setSettings((prev) => ({...prev, theme: prev.theme === 'light' ? 'dark' : 'light'}));
     }, []);
 
-    return {settings, toggleTheme, setModel};
+    const setModel = useCallback((model: string) => {
+        setSettings((prev) => ({...prev, model}));
+    }, []);
+
+    return {settings, settingsPopoverOpen, setSettingsPopoverOpen, toggleTheme, setModel};
 };
 
 const useMockChatHistory = () => {
@@ -77,13 +57,21 @@ const useMockChatHistory = () => {
     return {topics, activeTopic, selectTopic};
 }
 
-
-// Main App Layout Component
 const AppLayout: React.FC = () => {
-    const {settings, toggleTheme, setModel} = useMockSettings();
     const {messages, inputValue, setInputValue, addMessage} = useMockChat();
     const {topics, activeTopic, selectTopic} = useMockChatHistory();
-    const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
+    const {settings, settingsPopoverOpen, setSettingsPopoverOpen, toggleTheme, setModel} = useMockSettings();
+    const [showCanvas, setShowCanvas] = useState(false); 
+    const [isSidebarHovered, setIsSidebarHovered] = useState(false); 
+
+    const handleSendMessage = (text: string) => {
+        addMessage('user', text);
+        // In real app, send to backend here
+    }
+
+    const toggleCanvas = useCallback(() => {
+        setShowCanvas(prev => !prev);
+    }, []);
 
     // Apply theme class to body
     useEffect(() => {
@@ -91,42 +79,57 @@ const AppLayout: React.FC = () => {
         document.body.classList.add(settings.theme);
     }, [settings.theme]);
 
-    const handleSendMessage = (text: string) => {
-        addMessage('user', text);
-        // In real app, send to backend here
-    }
-
     return (
-        // Use Framer Motion's AnimatePresence if needed for page transitions later
-        <div className="flex h-screen w-screen flex-col bg-background text-foreground overflow-hidden">
+        <div className={`flex flex-col h-screen ${settings.theme}`}>
             <Header settings={settings}/>
-            <div className="flex flex-1 overflow-hidden">
-                <Sidebar
-                    settings={settings}
-                    onToggleTheme={toggleTheme}
-                    onSetModel={setModel}
-                    topics={topics}
-                    activeTopic={activeTopic}
-                    onSelectTopic={selectTopic}
-                    settingsPopoverOpen={settingsPopoverOpen}
-                    onSettingsPopoverOpenChange={setSettingsPopoverOpen}
-                />
-                {/* Main Content Area */}
-                <main className="flex flex-1 flex-col overflow-hidden">
-                    <ChatArea messages={messages}/>
+            <main className="flex flex-1 overflow-hidden">
+                {/* Sidebar Container with Hover Handlers */}
+                <div 
+                    onMouseEnter={() => setIsSidebarHovered(true)}
+                    onMouseLeave={() => setIsSidebarHovered(false)}
+                    className={`transition-all duration-300 ease-in-out shrink-0 ${isSidebarHovered ? 'md:w-64 lg:w-72' : 'md:w-16'}`}
+                >
+                    <Sidebar
+                        settings={settings}
+                        onToggleTheme={toggleTheme}
+                        onSetModel={setModel}
+                        topics={topics}
+                        activeTopic={activeTopic}
+                        onSelectTopic={selectTopic}
+                        settingsPopoverOpen={settingsPopoverOpen}
+                        onSettingsPopoverOpenChange={setSettingsPopoverOpen}
+                        isExpanded={isSidebarHovered} 
+                    />
+                </div>
+
+                {/* Main Content Area (Chat + Optional Canvas) */}
+                <div className="flex flex-1 flex-col overflow-hidden">
+                    {/* Top section (Chat or Chat+Canvas) */}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Chat Area always visible */}
+                        <div className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${showCanvas ? 'w-1/2' : 'w-full'}`}> 
+                            <ChatArea messages={messages} className="flex-1 overflow-y-auto p-4"/>
+                        </div>
+                        
+                        {/* Canvas Area conditionally rendered */}
+                        {showCanvas && (
+                            <div className="w-1/2 border-l overflow-hidden">
+                                <CanvasArea/>
+                            </div>
+                        )}
+                    </div>
+                    {/* Input Area */}
                     <InputArea
                         inputValue={inputValue}
                         onInputChange={setInputValue}
                         onSendMessage={handleSendMessage}
+                        showCanvas={showCanvas}
+                        onToggleCanvas={toggleCanvas}
                     />
-                </main>
-            </div>
+                </div>
+            </main>
         </div>
     );
 };
 
-
-// Default export for Next.js page
-export default function App() {
-    return <AppLayout/>;
-}
+export default AppLayout;

@@ -5,6 +5,8 @@ import {Switch} from "../ui/switch";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "../ui/select";
 import {Input} from "../ui/input";
 import {Popover, PopoverContent, PopoverTrigger} from "../ui/popover";
+import { cn } from '@/lib/utils'; 
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"; 
 
 interface AppSettingsComponentProps {
     settings: AppSettings;
@@ -15,6 +17,7 @@ interface AppSettingsComponentProps {
 interface ControlledAppSettingsComponentProps extends AppSettingsComponentProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    isExpanded?: boolean; 
 }
 
 const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({
@@ -22,7 +25,8 @@ const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({
                                                                                  onToggleTheme,
                                                                                  onSetModel,
                                                                                  open,
-                                                                                 onOpenChange
+                                                                                 onOpenChange,
+                                                                                 isExpanded = true, 
                                                                              }) => {
     const models = ["gemini-pro", "claude-3-opus", "gpt-4-turbo"];
     const [apiKey, setApiKey] = React.useState("");
@@ -34,12 +38,15 @@ const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({
         <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>
                 <button
-                    className="flex w-full items-center justify-between p-0 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors"
+                    className={cn(
+                        "flex items-center p-0 text-sm font-medium text-left hover:bg-accent rounded-md transition-colors",
+                        isExpanded ? "w-full justify-between" : "justify-center p-2" // Adjust styling when collapsed
+                    )}
                     aria-label="Open settings"
                 >
-                    <div className="flex items-center">
-                        <Settings className="mr-2 h-4 w-4"/>
-                        Settings
+                    <div className={cn("flex items-center", isExpanded ? "w-full" : "")}>
+                        <Settings className={cn("h-4 w-4", isExpanded ? "mr-2" : "mr-0")}/>
+                        {isExpanded && <span>Settings</span>} {/* Conditionally render text */}
                     </div>
                 </button>
             </PopoverTrigger>
@@ -105,4 +112,3 @@ const AppSettingsComponent: React.FC<ControlledAppSettingsComponentProps> = ({
 };
 
 export default AppSettingsComponent;
-

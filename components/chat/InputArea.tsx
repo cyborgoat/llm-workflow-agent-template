@@ -1,7 +1,7 @@
 import React from "react";
 import {Input} from "../ui/input";
 import {Button} from "../ui/button";
-import {Paperclip, Send} from "lucide-react";
+import {Paperclip, Send, Workflow} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "../ui/tooltip";
 
 interface InputAreaProps {
@@ -9,9 +9,18 @@ interface InputAreaProps {
     onInputChange: (val: string) => void;
     onSendMessage: (text: string) => void;
     onFileUpload?: (file: File) => void; // Called for each file uploaded
+    showCanvas: boolean; // Add prop for canvas state
+    onToggleCanvas: () => void; // Add prop for toggling canvas
 }
 
-const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendMessage, onFileUpload}) => {
+const InputArea: React.FC<InputAreaProps> = ({
+    inputValue,
+    onInputChange,
+    onSendMessage,
+    onFileUpload,
+    showCanvas, // Destructure prop
+    onToggleCanvas // Destructure prop
+}) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     // Imperatively set webkitdirectory and directory attributes for folder upload
@@ -39,6 +48,7 @@ const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendM
 
     return (
         <div className="flex gap-2 p-4 border-t bg-background items-center">
+            {/* File Upload Button */}
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button
@@ -65,6 +75,25 @@ const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendM
                     Upload files, images, or entire folders
                 </TooltipContent>
             </Tooltip>
+            {/* Canvas Toggle Button */}
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        type="button"
+                        variant={showCanvas ? "secondary" : "ghost"} // Change variant based on state
+                        size="icon"
+                        className="p-2"
+                        aria-label={showCanvas ? "Hide Workflow Canvas" : "Show Workflow Canvas"}
+                        onClick={onToggleCanvas} // Call toggle function
+                    >
+                        <Workflow className="h-5 w-5"/>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                    {showCanvas ? "Hide Workflow Canvas" : "Show Workflow Canvas"}
+                </TooltipContent>
+            </Tooltip>
+            {/* Input Field */}
             <Input
                 type="text"
                 placeholder="Type your message..."
@@ -89,4 +118,3 @@ const InputArea: React.FC<InputAreaProps> = ({inputValue, onInputChange, onSendM
 };
 
 export default InputArea;
-

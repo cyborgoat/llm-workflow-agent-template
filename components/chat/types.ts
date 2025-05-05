@@ -1,1 +1,1 @@
-export type { Message } from "../../types";
+export type {Message} from "../../types";

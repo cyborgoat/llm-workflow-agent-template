@@ -1,6 +1,7 @@
 # LLM Agent Workflow Generator
 
-A minimal agentic LLM web app built with Next.js 15 (App Router), featuring a chat interface and a visual workflow editor for AI agent flows.
+A minimal agentic LLM web app built with Next.js 15 (App Router), featuring a chat interface and a visual workflow
+editor for AI agent flows.
 
 ## Features
 
@@ -68,6 +69,7 @@ llm-workflow-agent-template/
 ## Customizing the Favicon
 
 To change the favicon:
+
 1. Replace `public/globe.svg` with your own SVG/PNG/ICO file, or add a new file (e.g., `favicon.ico`).
 2. Update the `<link rel="icon" ... />` in `app/layout.tsx` to reference your desired icon.
 

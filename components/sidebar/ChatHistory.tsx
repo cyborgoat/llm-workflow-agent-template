@@ -1,9 +1,8 @@
 import React from "react";
 import type {ChatTopic} from "../../types";
-import {ChevronDown, History, PlusSquare} from "lucide-react";
+import {ChevronDown, History} from "lucide-react";
 import {motion} from "framer-motion";
 import { cn } from '@/lib/utils'; 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"; 
 
 interface ChatHistoryProps {
     topics: ChatTopic[];

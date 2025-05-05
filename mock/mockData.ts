@@ -1,6 +1,42 @@
 // mock/mockData.ts
 // Centralized mock data for the agentic LLM application
 
+import { ReactNode } from 'react';
+import { MessageSquare, Bot, Wrench, CheckCircle } from 'lucide-react';
+
+// iconKey should be one of: 'MessageSquare', 'Bot', 'Wrench', 'CheckCircle', etc. The component will map this to an icon.
+export type WorkflowNodeData = {
+    name: string;
+    description?: string;
+    inputs?: { name: string; type: string; }[];
+    outputs?: { name: string; type: string; }[];
+    iconKey?: string;
+    status?: 'pending' | 'running' | 'success' | 'error';
+};
+
+export type WorkflowNode = {
+    id: string;
+    type: string;
+    position: { x: number; y: number };
+    data: WorkflowNodeData;
+};
+
+export type WorkflowEdge = {
+    id: string;
+    source: string;
+    target: string;
+    sourceHandle?: string;
+    targetHandle?: string;
+    animated?: boolean;
+    type?: string;
+    label?: string;
+};
+
+export type WorkflowDiagram = {
+    nodes: WorkflowNode[];
+    edges: WorkflowEdge[];
+};
+
 export type Message = {
     id: string;
     topicId: string;
@@ -22,66 +58,39 @@ export type AppSettings = {
     toolStatus: 'active' | 'inactive';
 };
 
-export const initialMessages: Message[] = [
-    // Topic t1: Mars Trip Planning
-    {
-        id: '1',
-        topicId: 't1',
-        sender: 'agent',
-        text: 'Hello! How can I help you today?',
-        timestamp: new Date(Date.now() - 60000 * 5)
-    },
-    {
-        id: '2',
-        topicId: 't1',
-        sender: 'user',
-        text: 'I need help planning my trip to Mars.',
-        timestamp: new Date(Date.now() - 60000 * 4)
-    },
-    {
-        id: '3',
-        topicId: 't1',
-        sender: 'agent',
-        text: 'Okay, planning a trip to Mars! That sounds exciting. What aspects are you focusing on first? Budget, duration, activities?',
-        timestamp: new Date(Date.now() - 60000 * 3)
-    },
-    {
-        id: '4',
-        topicId: 't1',
-        sender: 'user',
-        text: 'Let\'s start with the budget and potential launch windows.',
-        timestamp: new Date(Date.now() - 60000 * 2)
-    },
-    {
-        id: '5',
-        topicId: 't1',
-        sender: 'agent',
-        text: 'Great. Budgeting for Mars requires considering transportation, habitat, supplies, and contingency funds. Current estimates range widely. As for launch windows, they occur roughly every 26 months when Earth and Mars are favorably aligned. The next few windows are...', 
-        timestamp: new Date(Date.now() - 60000 * 1)
-    },
-    // Topic t2: Recipe Ideas
-    {
-        id: '6',
-        topicId: 't2',
-        sender: 'agent',
-        text: 'What kind of recipe are you looking for?',
-        timestamp: new Date(Date.now() - 60000 * 10)
-    },
-    {
-        id: '7',
-        topicId: 't2',
-        sender: 'user',
-        text: 'Something quick and easy for a weeknight.',
-        timestamp: new Date(Date.now() - 60000 * 9)
-    },
-    {
-        id: '8',
-        topicId: 't2',
-        sender: 'agent',
-        text: 'How about a simple pasta dish with cherry tomatoes, garlic, and basil? It takes about 20 minutes.',
-        timestamp: new Date(Date.now() - 60000 * 8)
+// Chat messages for each topic are now stored in separate files in the chat_history/ directory as JSON.
+// Example: chat_history/t1_mars_trip_planning.json, t2_recipe_ideas.json, etc.
+//
+// Use the provided function to load and parse all chat history files into a single array of Message objects.
+
+/**
+ * Loads and parses all chat history JSON files from the /chat_history directory via HTTP (browser-friendly).
+ * Returns a combined array of Message objects.
+ * Usage: const allMessages = await loadAllChatHistories();
+ */
+export async function loadAllChatHistories(): Promise<Message[]> {
+    // List the filenames manually or generate dynamically if available
+    const filenames = [
+        't1_mars_trip_planning.json',
+        't2_recipe_ideas.json',
+        't3_code_debugging_session.json',
+        't4_quantum_physics_explained.json',
+        't5_network_incident_troubleshooting.json',
+    ];
+    let allMessages: Message[] = [];
+    for (const filename of filenames) {
+        const res = await fetch(`/chat_history/${filename}`);
+        if (res.ok) {
+            const messages = await res.json();
+            // Convert timestamp strings to Date objects for each message
+            allMessages = allMessages.concat(messages.map((m: any) => ({...m, timestamp: new Date(m.timestamp)})));
+        } else {
+            // Optionally handle fetch errors
+            console.warn(`Failed to load ${filename}`);
+        }
     }
-];
+    return allMessages;
+}
 
 export const initialSettings: AppSettings = {
     theme: 'light',
@@ -96,4 +105,18 @@ export const initialTopics: ChatTopic[] = [
     {id: 't2', title: 'Recipe Ideas'},
     {id: 't3', title: 'Code Debugging Session'},
     {id: 't4', title: 'Quantum Physics Explained'},
+    {id: 't5', title: 'Network Incident Troubleshooting'},
 ];
+
+/**
+ * Loads and parses the workflow diagram JSON for a given topicId from /chat_history/workflow_diagram/<topicId>.json.
+ * Usage: const diagram = await loadWorkflowDiagram('t1_mars_trip_planning');
+ */
+export async function loadWorkflowDiagram(topicId: string): Promise<WorkflowDiagram> {
+    // Always fetch the diagram using the topic id (e.g., t1, t2, ...)
+    const res = await fetch(`/chat_history/workflow_diagram/${topicId}.json`);
+    if (!res.ok) {
+        throw new Error(`Failed to load workflow diagram for topic: ${topicId}`);
+    }
+    return res.json();
+}

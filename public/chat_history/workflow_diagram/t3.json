@@ -1,0 +1,60 @@
+{
+  "nodes": [
+    {
+      "id": "user-input",
+      "type": "workflow",
+      "position": { "x": 50, "y": 50 },
+      "data": {
+        "name": "User Input",
+        "description": "User describes a code bug.",
+        "iconKey": "MessageSquare",
+        "outputs": [{ "name": "Bug Description", "type": "string" }],
+        "status": "success"
+      }
+    },
+    {
+      "id": "debugger",
+      "type": "workflow",
+      "position": { "x": 300, "y": 70 },
+      "data": {
+        "name": "Debugger",
+        "description": "Suggests debugging steps.",
+        "iconKey": "Bot",
+        "inputs": [{ "name": "Bug Description", "type": "string" }],
+        "outputs": [{ "name": "Debug Steps", "type": "string" }],
+        "status": "running"
+      }
+    },
+    {
+      "id": "fix-suggester",
+      "type": "workflow",
+      "position": { "x": 600, "y": 120 },
+      "data": {
+        "name": "Fix Suggester",
+        "description": "Suggests code fixes.",
+        "iconKey": "Tool",
+        "inputs": [{ "name": "Debug Steps", "type": "string" }],
+        "outputs": [{ "name": "Code Fix", "type": "string" }],
+        "status": "pending"
+      }
+    },
+    {
+      "id": "final-output",
+      "type": "workflow",
+      "position": { "x": 850, "y": 180 },
+      "data": {
+        "name": "Final Output",
+        "description": "Presents fix to user.",
+        "iconKey": "CheckCircle",
+        "inputs": [{ "name": "Code Fix", "type": "string" }],
+        "outputs": [{ "name": "Agent Response", "type": "string" }],
+        "status": "success"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "user-input", "target": "debugger", "animated": true },
+    { "id": "e2-3", "source": "debugger", "target": "fix-suggester", "animated": true },
+    { "id": "e3-4", "source": "fix-suggester", "target": "final-output", "animated": true }
+  ]
+}

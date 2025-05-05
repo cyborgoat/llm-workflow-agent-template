@@ -5,12 +5,28 @@ import Header from "../components/header/Header";
 import Sidebar from "../components/sidebar/Sidebar";
 import ChatArea from "../components/chat/ChatArea";
 import InputArea from "../components/chat/InputArea";
-import {AppSettings, ChatTopic, initialMessages, initialSettings, initialTopics, Message} from "@/mock/mockData";
+import {AppSettings, ChatTopic, initialSettings, initialTopics, Message} from "@/mock/mockData";
 import CanvasArea from '@/components/canvas/CanvasArea';
 
-const useMockChat = () => {
-    const [messages, setMessages] = useState<Message[]>(initialMessages);
+import { loadAllChatHistories } from "@/mock/mockData";
+
+const useMockChat = (activeTopic: string | null) => {
+    const [allMessages, setAllMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
+
+    useEffect(() => {
+        let mounted = true;
+        loadAllChatHistories().then((msgs) => {
+            if (mounted) {
+                // Convert timestamp strings to Date objects for each message
+                setAllMessages(msgs.map(m => ({...m, timestamp: new Date(m.timestamp)})));
+            }
+        });
+        return () => { mounted = false; };
+    }, []);
+
+    // Only show messages for the active topic
+    const messages = activeTopic ? allMessages.filter(m => m.topicId === activeTopic) : [];
 
     const addMessage = (sender: 'user' | 'agent', text: string, topicId: string) => {
         if (!topicId) { 
@@ -24,7 +40,7 @@ const useMockChat = () => {
             text,
             timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, newMessage]);
+        setAllMessages((prev) => [...prev, newMessage]);
 
         // Simulate agent response
         if (sender === 'user') {
@@ -72,8 +88,8 @@ const useMockChatHistory = () => {
 }
 
 const AppLayout: React.FC = () => {
-    const {messages, inputValue, setInputValue, addMessage} = useMockChat();
     const {topics, activeTopic, selectTopic, createNewTopic} = useMockChatHistory(); 
+    const {messages, inputValue, setInputValue, addMessage} = useMockChat(activeTopic);
     const {settings, settingsPopoverOpen, setSettingsPopoverOpen, toggleTheme, setModel} = useMockSettings();
     const [showCanvas, setShowCanvas] = useState(false); 
     const [isSidebarHovered, setIsSidebarHovered] = useState(false); 
@@ -101,8 +117,6 @@ const AppLayout: React.FC = () => {
         document.body.classList.add(settings.theme);
     }, [settings.theme]);
 
-    const filteredMessages = activeTopic ? messages.filter(msg => msg.topicId === activeTopic) : [];
-
     return (
         <div className={`flex flex-col h-screen ${settings.theme}`}>
             <Header settings={settings}/>
@@ -128,12 +142,12 @@ const AppLayout: React.FC = () => {
                 <div className="flex flex-1 flex-col overflow-hidden">
                     <div className="flex flex-1 overflow-hidden">
                         <div className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${showCanvas ? 'w-1/2' : 'w-full'}`}> 
-                            <ChatArea messages={filteredMessages} className="flex-1 overflow-y-auto p-4"/>
+                            <ChatArea messages={messages} className="flex-1 overflow-y-auto p-4"/>
                         </div>
                         
                         {showCanvas && (
                             <div className="w-1/2 border-l overflow-hidden">
-                                <CanvasArea/>
+                                <CanvasArea topicId={activeTopic || undefined} />
                             </div>
                         )}
                     </div>

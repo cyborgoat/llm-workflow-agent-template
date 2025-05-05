@@ -11,6 +11,7 @@ export interface ToolParameter {
 
 // Define the data structure for our custom tool nodes
 export interface ToolNodeData {
+    [key: string]: unknown;
     name: string;
     description: string;
     inputs: ToolParameter[];

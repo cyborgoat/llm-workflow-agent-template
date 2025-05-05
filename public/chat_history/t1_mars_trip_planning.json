@@ -1,0 +1,14 @@
+[
+    {"id": "1", "topicId": "t1", "sender": "agent", "text": "Hello! How can I help you today?", "timestamp": "2025-05-05T23:39:38+08:00"},
+    {"id": "2", "topicId": "t1", "sender": "user", "text": "I need help planning my trip to Mars.", "timestamp": "2025-05-05T23:40:38+08:00"},
+    {"id": "3", "topicId": "t1", "sender": "agent", "text": "That sounds exciting! What aspects are you focusing on first? Budget, duration, activities?", "timestamp": "2025-05-05T23:41:38+08:00"},
+    {"id": "4", "topicId": "t1", "sender": "user", "text": "Let’s start with the budget and potential launch windows.", "timestamp": "2025-05-05T23:42:38+08:00"},
+    {"id": "5", "topicId": "t1", "sender": "agent", "text": "Budgeting for Mars requires considering transportation, habitat, supplies, and contingency funds. Current estimates range widely. As for launch windows, they occur roughly every 26 months when Earth and Mars are favorably aligned.", "timestamp": "2025-05-05T23:43:38+08:00"},
+    {"id": "6", "topicId": "t1", "sender": "user", "text": "What is the estimated cost for transportation?", "timestamp": "2025-05-05T23:44:38+08:00"},
+    {"id": "7", "topicId": "t1", "sender": "agent", "text": "Transportation to Mars is currently estimated at $500,000 to $2 million per person, depending on mission and provider.", "timestamp": "2025-05-05T23:45:38+08:00"},
+    {"id": "8", "topicId": "t1", "sender": "user", "text": "And the next available launch window?", "timestamp": "2025-05-05T23:46:38+08:00"},
+    {"id": "9", "topicId": "t1", "sender": "agent", "text": "The next favorable Mars launch window is in 2026. Would you like to see a breakdown of costs for other aspects?", "timestamp": "2025-05-05T23:47:38+08:00"},
+    {"id": "10", "topicId": "t1", "sender": "user", "text": "Yes, please include habitat and supplies.", "timestamp": "2025-05-05T23:48:38+08:00"},
+    {"id": "11", "topicId": "t1", "sender": "agent", "text": "Habitat costs can range from $100,000 to $500,000, and supplies for a 2-year mission are estimated at $50,000 per person.", "timestamp": "2025-05-05T23:49:38+08:00"},
+    {"id": "12", "topicId": "t1", "sender": "user", "text": "Thanks! That helps a lot.", "timestamp": "2025-05-05T23:50:38+08:00"}
+]

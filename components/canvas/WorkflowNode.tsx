@@ -16,7 +16,7 @@ export interface WorkflowNodeData {
 }
 
 // Extend React Flow's NodeProps with our custom data type
-interface WorkflowNodeProps extends NodeProps<WorkflowNodeData> {}
+type WorkflowNodeProps = NodeProps<WorkflowNodeData>;
 
 const WorkflowNode: React.FC<WorkflowNodeProps> = ({ id, data, isConnectable, selected }) => {
     const { name, description, inputs, outputs, icon, status } = data;

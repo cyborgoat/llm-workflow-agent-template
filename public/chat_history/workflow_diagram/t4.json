@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "user-input",
+      "type": "workflow",
+      "position": { "x": 50, "y": 50 },
+      "data": {
+        "name": "User Input",
+        "description": "User asks a quantum physics question.",
+        "iconKey": "MessageSquare",
+        "outputs": [{ "name": "Physics Query", "type": "string" }],
+        "status": "success"
+      }
+    },
+    {
+      "id": "physics-explainer",
+      "type": "workflow",
+      "position": { "x": 300, "y": 80 },
+      "data": {
+        "name": "Physics Explainer",
+        "description": "Explains quantum concepts.",
+        "iconKey": "Bot",
+        "inputs": [{ "name": "Physics Query", "type": "string" }],
+        "outputs": [{ "name": "Explanation", "type": "string" }],
+        "status": "running"
+      }
+    },
+    {
+      "id": "final-output",
+      "type": "workflow",
+      "position": { "x": 600, "y": 120 },
+      "data": {
+        "name": "Final Response",
+        "description": "Presents explanation to user.",
+        "iconKey": "CheckCircle",
+        "inputs": [{ "name": "Explanation", "type": "string" }],
+        "outputs": [{ "name": "Agent Response", "type": "string" }],
+        "status": "success"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "user-input", "target": "physics-explainer", "animated": true },
+    { "id": "e2-3", "source": "physics-explainer", "target": "final-output", "animated": true }
+  ]
+}

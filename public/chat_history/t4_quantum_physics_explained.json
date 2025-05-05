@@ -1,0 +1,10 @@
+[
+    {"id": "30", "topicId": "t4", "sender": "user", "text": "Can you explain quantum entanglement?", "timestamp": "2025-05-05T23:10:38+08:00"},
+    {"id": "31", "topicId": "t4", "sender": "agent", "text": "Quantum entanglement is a phenomenon where two particles become linked and instantaneously affect each other, no matter the distance.", "timestamp": "2025-05-05T23:11:38+08:00"},
+    {"id": "32", "topicId": "t4", "sender": "user", "text": "How is this possible?", "timestamp": "2025-05-05T23:12:38+08:00"},
+    {"id": "33", "topicId": "t4", "sender": "agent", "text": "It’s due to the fundamental principles of quantum mechanics. The state of one particle directly relates to the state of the other.", "timestamp": "2025-05-05T23:13:38+08:00"},
+    {"id": "34", "topicId": "t4", "sender": "user", "text": "Has this been proven experimentally?", "timestamp": "2025-05-05T23:14:38+08:00"},
+    {"id": "35", "topicId": "t4", "sender": "agent", "text": "Yes, many experiments, such as those by Alain Aspect in the 1980s, have confirmed entanglement.", "timestamp": "2025-05-05T23:15:38+08:00"},
+    {"id": "36", "topicId": "t4", "sender": "user", "text": "What are the practical uses?", "timestamp": "2025-05-05T23:16:38+08:00"},
+    {"id": "37", "topicId": "t4", "sender": "agent", "text": "Entanglement is used in quantum computing and quantum cryptography, enabling new possibilities in secure communication and computation.", "timestamp": "2025-05-05T23:17:38+08:00"}
+]

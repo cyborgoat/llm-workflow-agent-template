@@ -1,0 +1,20 @@
+[
+    {"id": "50", "topicId": "t5", "sender": "user", "text": "Our main office lost internet connectivity at 8:03am. Multiple users are affected.", "timestamp": "2025-05-05T23:00:38+08:00"},
+    {"id": "51", "topicId": "t5", "sender": "agent", "text": "Thank you for reporting. Are all users affected, or only certain departments or locations?", "timestamp": "2025-05-05T23:01:38+08:00"},
+    {"id": "52", "topicId": "t5", "sender": "user", "text": "It appears to be the entire main office. Remote users are not affected.", "timestamp": "2025-05-05T23:02:38+08:00"},
+    {"id": "53", "topicId": "t5", "sender": "agent", "text": "Understood. Is there any network equipment showing errors or alerts?", "timestamp": "2025-05-05T23:03:38+08:00"},
+    {"id": "54", "topicId": "t5", "sender": "user", "text": "The core switch has a red status LED and the firewall is unreachable from our monitoring system.", "timestamp": "2025-05-05T23:04:38+08:00"},
+    {"id": "55", "topicId": "t5", "sender": "agent", "text": "Please check if the core switch is powered and if cables are securely connected. Any recent changes or maintenance?", "timestamp": "2025-05-05T23:05:38+08:00"},
+    {"id": "56", "topicId": "t5", "sender": "user", "text": "No scheduled maintenance. The switch is powered but shows constant amber lights on all ports.", "timestamp": "2025-05-05T23:06:38+08:00"},
+    {"id": "57", "topicId": "t5", "sender": "agent", "text": "Amber lights may indicate a loop or broadcast storm. Any alarms or error logs from the switch console?", "timestamp": "2025-05-05T23:07:38+08:00"},
+    {"id": "58", "topicId": "t5", "sender": "user", "text": "Console output shows repeated STP topology changes and high CPU usage.", "timestamp": "2025-05-05T23:08:38+08:00"},
+    {"id": "59", "topicId": "t5", "sender": "agent", "text": "This suggests a network loop. Were any new devices or cables added recently?", "timestamp": "2025-05-05T23:09:38+08:00"},
+    {"id": "60", "topicId": "t5", "sender": "user", "text": "A new conference room switch was installed yesterday.", "timestamp": "2025-05-05T23:10:38+08:00"},
+    {"id": "61", "topicId": "t5", "sender": "agent", "text": "Please disconnect the new switch and observe if the core switch recovers.", "timestamp": "2025-05-05T23:11:38+08:00"},
+    {"id": "62", "topicId": "t5", "sender": "user", "text": "Disconnected. The core switch status is now green and internet is restored.", "timestamp": "2025-05-05T23:12:38+08:00"},
+    {"id": "63", "topicId": "t5", "sender": "agent", "text": "Great. The new switch may have created a loop. Please check its configuration before reconnecting.", "timestamp": "2025-05-05T23:13:38+08:00"},
+    {"id": "64", "topicId": "t5", "sender": "user", "text": "The new switch had both uplink ports connected to the core, causing a loop.", "timestamp": "2025-05-05T23:14:38+08:00"},
+    {"id": "65", "topicId": "t5", "sender": "agent", "text": "Recommend enabling Spanning Tree Protocol (STP) on all switches to prevent future loops.", "timestamp": "2025-05-05T23:15:38+08:00"},
+    {"id": "66", "topicId": "t5", "sender": "user", "text": "STP is now enabled. Everything is stable. Thank you!", "timestamp": "2025-05-05T23:16:38+08:00"},
+    {"id": "67", "topicId": "t5", "sender": "agent", "text": "You’re welcome. Please monitor for any further issues and let me know if you need more help.", "timestamp": "2025-05-05T23:17:38+08:00"}
+]

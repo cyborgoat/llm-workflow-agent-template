@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "user-input",
+      "type": "workflow",
+      "position": { "x": 60, "y": 60 },
+      "data": {
+        "name": "User Input",
+        "description": "User asks for recipe ideas.",
+        "iconKey": "MessageSquare",
+        "outputs": [{ "name": "Recipe Query", "type": "string" }],
+        "status": "success"
+      }
+    },
+    {
+      "id": "recipe-suggester",
+      "type": "workflow",
+      "position": { "x": 320, "y": 80 },
+      "data": {
+        "name": "Recipe Suggester",
+        "description": "Suggests recipes based on user input.",
+        "iconKey": "Bot",
+        "inputs": [{ "name": "Recipe Query", "type": "string" }],
+        "outputs": [{ "name": "Recipe", "type": "string" }],
+        "status": "running"
+      }
+    },
+    {
+      "id": "final-output",
+      "type": "workflow",
+      "position": { "x": 600, "y": 120 },
+      "data": {
+        "name": "Final Response",
+        "description": "Presents recipe to user.",
+        "iconKey": "CheckCircle",
+        "inputs": [{ "name": "Recipe", "type": "string" }],
+        "outputs": [{ "name": "Agent Response", "type": "string" }],
+        "status": "success"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "user-input", "target": "recipe-suggester", "animated": true },
+    { "id": "e2-3", "source": "recipe-suggester", "target": "final-output", "animated": true }
+  ]
+}

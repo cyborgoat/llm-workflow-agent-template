@@ -79,7 +79,7 @@ export async function loadAllChatHistories(): Promise<Message[]> {
     ];
     let allMessages: Message[] = [];
     for (const filename of filenames) {
-        const res = await fetch(`/chat_history/${filename}`);
+        const res = await fetch(`./chat_history/${filename}`);
         if (res.ok) {
             const messages = await res.json();
             // Convert timestamp strings to Date objects for each message
@@ -114,7 +114,7 @@ export const initialTopics: ChatTopic[] = [
  */
 export async function loadWorkflowDiagram(topicId: string): Promise<WorkflowDiagram> {
     // Always fetch the diagram using the topic id (e.g., t1, t2, ...)
-    const res = await fetch(`/chat_history/workflow_diagram/${topicId}.json`);
+    const res = await fetch(`./chat_history/workflow_diagram/${topicId}.json`);
     if (!res.ok) {
         throw new Error(`Failed to load workflow diagram for topic: ${topicId}`);
     }
